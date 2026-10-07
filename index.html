@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>KUMA 🐻🤖</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f4f6;color:#111827}
+.app{max-width:720px;margin:auto;min-height:100vh;background:white;display:flex;flex-direction:column}
+header{padding:18px 20px;background:#111827;color:white;display:flex;align-items:center;gap:12px}
+.logo{font-size:36px}.title{font-size:22px;font-weight:700}.sub{font-size:12px;opacity:.7}
+main{flex:1;padding:18px;overflow:auto}.bubble{padding:13px 15px;border-radius:18px;margin:10px 0;max-width:86%;line-height:1.5;white-space:pre-wrap}
+.kuma{background:#eef2ff;margin-right:auto}.user{background:#111827;color:white;margin-left:auto}
+.controls{padding:14px;border-top:1px solid #e5e7eb;display:flex;gap:8px}
+input{flex:1;border:1px solid #d1d5db;border-radius:14px;padding:13px;font-size:16px}
+button{border:0;border-radius:14px;padding:0 16px;font-size:18px;background:#111827;color:white}
+.mic{width:52px;background:#f59e0b}.hint{text-align:center;color:#6b7280;font-size:12px;padding:4px 15px 14px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">🐻</div><div><div class="title">KUMA 🤖</div><div class="sub">Teman AI pribadi</div></div></header>
+<main id="chat">
+<div class="bubble kuma">Halo! Saya KUMA 🐻🤖<br><br>Untuk sekarang saya adalah versi awal. Kamu bisa mengetik atau menekan 🎤 untuk mencoba percakapan suara.</div>
+</main>
+<div class="controls">
+<input id="text" placeholder="Bicara dengan KUMA..." autocomplete="off">
+<button class="mic" id="mic">🎤</button>
+<button id="send">➤</button>
+</div>
+<div class="hint">Versi awal — otak AI akan kita sambungkan pada tahap berikutnya.</div>
+</div>
+<script>
+const chat=document.querySelector('#chat'), input=document.querySelector('#text');
+function add(text,who){const d=document.createElement('div');d.className='bubble '+who;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function respond(t){
+  const x=t.toLowerCase();
+  if(x.includes('bahasa jepang')||x.includes('jepang')) return 'Bisa. 🇯🇵 Nanti saya akan membantu menerjemahkan, mengoreksi, dan melatih percakapan bahasa Jepangmu.';
+  if(x.includes('ingatkan')||x.includes('pengingat')) return 'Fitur pengingat akan kita sambungkan setelah otak AI dan sistem pengingat KUMA siap.';
+  return 'Saya menerima pesanmu. Pada tahap berikutnya, kita akan menyambungkan saya ke AI sehingga saya bisa memahami percakapan bebas, bukan hanya perintah yang sudah ditentukan.';
+}
+document.querySelector('#send').onclick=()=>{let t=input.value.trim();if(!t)return;add(t,'user');input.value='';setTimeout(()=>add(respond(t),'kuma'),300)}
+input.addEventListener('keydown',e=>{if(e.key==='Enter')document.querySelector('#send').click()});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+ const r=new SR();r.lang='id-ID';r.interimResults=false;r.continuous=false;
+ document.querySelector('#mic').onclick=()=>{r.start()};
+ r.onresult=e=>{input.value=e.results[0][0].transcript;document.querySelector('#send').click()};
+ r.onerror=()=>alert('Akses mikrofon belum tersedia atau ditolak.');
+}else document.querySelector('#mic').onclick=()=>alert('Browser ini belum mendukung pengenalan suara untuk KUMA.');
+</script>
+</body>
+</html>
